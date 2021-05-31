@@ -87,6 +87,7 @@ function initialize(webRouter, privateApiRouter, publicApiRouter) {
 
   if (Features.hasFeature('registration')) {
     webRouter.get('/register', UserPagesController.registerPage)
+    webRouter.post('/register', UserController.register_public)
     AuthenticationController.addEndpointToLoginWhitelist('/register')
   }
 

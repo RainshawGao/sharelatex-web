@@ -28,7 +28,8 @@ export default App.controller(
       return emails
     }
 
-    return ($scope.registerUsers = function () {
+  return (
+    $scope.registerUsers = function() {
       const emails = parseEmails($scope.inputs.emails)
       $scope.error = false
       return Array.from(emails).map(email =>
@@ -37,14 +38,32 @@ export default App.controller(
             email,
             _csrf: window.csrfToken,
           })
-          .then(function (response) {
+          .then(function(response) {
             const { data } = response
             const user = data
             $scope.users.push(user)
             return ($scope.inputs.emails = '')
           })
-          .catch(() => ($scope.error = true))
+          .catch(() => ($scope.error = true)),
       )
-    })
-  }
-)
+    },
+    $scope.registerUsers_pub = function() {
+      const emails = parseEmails($scope.inputs.emails)
+      $scope.error = false
+      return Array.from(emails).map(email =>
+        queuedHttp
+          .post('/register', {
+            email,
+            _csrf: window.csrfToken,
+          })
+          .then(function(response) {
+            const { data } = response
+            const user = data
+            $scope.users.push(user)
+            return ($scope.inputs.emails = '')
+          })
+          .catch(() => ($scope.error = true)),
+      )
+    }
+  )
+})

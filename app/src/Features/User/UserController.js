@@ -475,6 +475,27 @@ const UserController = {
     )
   },
 
+  register_public(req, res, next) {
+    const { email } = req.body
+    const valid= (/^\d{10}@(stu\.)?pku\.edu\.cn\s*$/.test(email))
+    if (email == null || email === '' || !valid) {
+      return res.sendStatus(422) // Unprocessable Entity
+    }
+    UserRegistrationHandler.registerNewUserAndSendActivationEmail(
+      email,
+      (error, user, setNewPasswordUrl) => {
+        if (error != null) {
+          return next(error)
+        }
+        setNewPasswordUrl = "Please check your inbox or trashbox."
+        res.json({
+          email: user.email,
+          setNewPasswordUrl
+        })
+      }
+    )
+  },
+
   changePassword: expressify(changePassword),
 }
 

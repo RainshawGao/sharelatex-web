@@ -20,13 +20,54 @@ block content
 							a(href="/login")  #{translate("login_here")}
 
 			.row
-				.col-md-8.col-md-offset-2.col-lg-6.col-lg-offset-3
-					.card
+				.col-md-12
+					.card(ng-controller="RegisterUsersController")
 						.page-header
 							h1 #{translate("register")}
-						p
-							| Please contact
-							|
-							strong(ng-non-bindable) #{settings.adminEmail}
-							|
-							| to create an account.
+						.row-spaced.ng-cloak
+							p This page only allows email starts with pku ID and ends with pku.edu.cn to register.
+							p
+								| If you do not have a pku email address and want to use other email address ends with other domain, please contact
+								|
+								strong(ng-non-bindable) #{settings.adminEmail}
+								|
+								| .
+						form.form
+							.row
+								.col-md-4.col-xs-8
+									input.form-control(
+										name="email",
+										type="text",
+										placeholder="0000000000@pku.edu.cn",
+										ng-model="inputs.emails",
+										on-enter="registerUsers_pub()"
+									)
+								.col-md-8.col-xs-4
+									button.btn.btn-primary(ng-click="registerUsers_pub()") #{translate("register")}
+
+						.row-spaced(ng-show="error").ng-cloak.text-danger
+							p
+								| Sorry, an error occured, check your email address or contact
+								|
+								strong(ng-non-bindable) #{settings.adminEmail}
+								|
+								| .
+
+						.row-spaced(ng-show="users.length > 0").ng-cloak.text-success
+							p We've sent out welcome emails to this email address.
+							p
+								| If you have not received this email in an hour, please contact
+								|
+								strong(ng-non-bindable) #{settings.adminEmail}
+								|
+								| .
+							p (Password reset tokens will expire after one week and the user will need registering again).
+
+						hr(ng-show="users.length > 0").ng-cloak
+						table(ng-show="users.length > 0").table.table-striped.ng-cloak
+							tr
+								th #{translate("email")}
+								th Set Password Url
+							tr(ng-repeat="user in users")
+								td {{ user.email }}
+								td(style="word-break: break-all;") {{ user.setNewPasswordUrl }}
